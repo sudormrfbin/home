@@ -2,6 +2,7 @@
 {
   imports = [
     ./programs/fish.nix
+    ./programs/lazygit.nix
     ./programs/helix
   ];
 
@@ -9,6 +10,7 @@
     packages = with pkgs; [
       fd
       eza
+      delta
       # bat
       # fzf
       # zoxide
