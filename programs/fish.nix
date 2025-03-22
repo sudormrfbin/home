@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
   programs.fish = {
-    enable = false;
+    enable = true;
     # vendor.completions.enable = true;
     # vendor.config.enable = true;
     # vendor.functions.enable = true;
@@ -9,17 +9,26 @@
       set fish_greeting # Disable greeting
       zoxide init --cmd j fish | source
       fzf_configure_bindings --directory=\co
-      tide configure --auto --style=Lean --prompt_colors='True color' --show_time=No --lean_prompt_height='Two lines' --prompt_connection=Dotted --prompt_connection_andor_frame_color=Dark --prompt_spacing=Sparse --icons='Few icons' --transient=No
 
       fish_vi_key_bindings
       set fish_cursor_default block
       set fish_cursor_insert line
       set fish_cursor_replace_one underscore
 
-      bind -M insert '`' accept-autosuggestion
+      bind -M insert \e/ __fish_toggle_comment_commandline
+      bind -M insert '`' merge-history-or-accept-suggestion
+      bind -M insert \cp up-or-search
+      bind -M insert \eu undo
+      bind -M insert \eU redo
+      bind -M insert \cx copy-current-or-last-cmdline
+      bind -M insert \cn down-or-search
+      bind -M insert \e0 __fish_preview_current_file
+      bind -M insert \e\> history-token-search-forward
+      bind -M insert \ck kill-line
 
-      abbr --set-cursor --add gc git commit -m \"%\"
-      abbr --set-cursor --add gcam git commit -am \"%\"
+      # putting this in home-manager's sessionVars is messing with the
+      # derivation build step somehow. Put it here for now.
+      set -x FZF_DEFAULT_OPTS '--bind "ctrl-x:execute-silent(printf \'%s \' {+} | xclip -selection clipboard)+abort" --height=20% --cycle'
     '';
     shellAbbrs = {
       rl = "exec fish";
@@ -42,6 +51,14 @@
       # gcam = "git commit -am";
       gcaan = "git commit --amend --all --no-edit";
       gcl = "git clone --depth=1";
+      gc = {
+        setCursor = true;
+        expansion = ''git commit -m "%"'';
+      };
+      gcam = {
+        setCursor = true;
+        expansion = ''git commit -am "%"'';
+      };
 
       "-" = "cd -";
 
@@ -50,44 +67,83 @@
       upg = "sudo apt upgrade";
       rem = "sudo apt remove";
 
+      imd = "systemctl poweroff";
+
+      xo = "xdg-open";
+      xc = "xclip -sel clip";
+
       c = "cargo";
 
-      h = "$EDITOR ~/my-home-manager/home.nix";
-      hs = "pushd ~/my-home-manager; home-manager switch --flake .#subcom; popd";
+      h = "$EDITOR ~/.config/home-manager";
+      hs = "home-manager switch --flake ~/.config/home-manager";
     };
 
-    plugins = with pkgs.fishPlugins; [
-      # doesn't work on wayland properly (does work with kitty)
-      # https://github.com/franciscolourenco/done/issues/134
-      # { name = "done"; src = done.src; }
-      {
-        name = "tide";
-        src = tide.src;
-      }
-      {
-        name = "tide";
-        src = tide.src;
-      }
-      {
-        name = "pisces";
-        src = pisces.src;
-      }
-      {
-        name = "puffer";
-        src = puffer.src;
-      }
-      {
-        name = "fzf-fish";
-        src = fzf-fish.src;
-      }
-      {
-        name = "fish-bd";
-        src = fish-bd.src;
-      }
-      {
-        name = "colored-man-pages";
-        src = colored-man-pages.src;
-      }
-    ];
+    functions = {
+      merge-history-or-accept-suggestion = {
+        body = ''
+          set -l cmdline (commandline -b | string collect)
+          if test -z "$cmdline"
+              history merge
+          else
+              commandline -f accept-autosuggestion
+          end
+        '';
+      };
+      ls = {
+        wraps = "eza";
+        body = "eza --icons --classify --color-scale --group-directories-first --hyperlink $argv";
+      };
+      copy-current-or-last-cmdline = {
+        body = ''
+          set cmdline (commandline -b | string collect)
+          if test -z "$cmdline"
+            echo -n "$history[1]" | fish_clipboard_copy
+          else
+            fish_clipboard_copy
+          end
+        '';
+      };
+    };
+
+    plugins =
+      let
+        plug = name: {
+          name = "${name}";
+          src = pkgs.fishPlugins."${name}".src;
+        };
+      in
+      with pkgs.fishPlugins;
+      [
+        # doesn't work on wayland properly (does work with kitty)
+        # https://github.com/franciscolourenco/done/issues/134
+        {
+          name = "done";
+          src = done.src;
+        }
+        {
+          name = "pure";
+          src = pure.src;
+        }
+        {
+          name = "pisces";
+          src = pisces.src;
+        }
+        {
+          name = "puffer";
+          src = puffer.src;
+        }
+        {
+          name = "fzf-fish";
+          src = fzf-fish.src;
+        }
+        {
+          name = "fish-bd";
+          src = fish-bd.src;
+        }
+        {
+          name = "colored-man-pages";
+          src = colored-man-pages.src;
+        }
+      ];
   };
 }

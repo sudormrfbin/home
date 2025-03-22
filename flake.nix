@@ -21,11 +21,11 @@
       defaultPackage.x86_64-darwin = home-manager.defaultPackage.x86_64-darwin;
 
       homeConfigurations = {
-        subcom = home-manager.lib.homeManagerConfiguration {
+        "subcom@subcom" = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [ ./subcom.nix ];
         };
-        personal = home-manager.lib.homeManagerConfiguration {
+        "gokul@gokul" = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [ ./personal.nix ];
         };

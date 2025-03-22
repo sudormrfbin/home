@@ -1,13 +1,14 @@
 { pkgs, ... }:
 {
   imports = [
-    # ./programs/fish.nix
+    ./programs/fish.nix
     ./programs/helix
   ];
 
   home = {
     packages = with pkgs; [
       fd
+      eza
       # bat
       # fzf
       # zoxide
@@ -22,8 +23,15 @@
     username = "gokul";
     homeDirectory = "/home/gokul";
 
-    sessionVariables = {
+    sessionVariables = rec {
       EDITOR = "hx";
+      BROWSER = "/usr/bin/firefox";
+      ANDROID_SDK_ROOT = "$HOME/Android";
+      ANDROID_HOME = "${ANDROID_SDK_ROOT}";
+      NDK_HOME = "${ANDROID_HOME}/ndk/26.1.10909125";
+      CARGO_TARGET_DIR = "$HOME/.cache/cargo-target/";
+      RUST_BACKTRACE = "1";
+      SXHKD_SHELL = "/bin/bash";
       # USE_CCACHE = "1";
       # CCACHE_EXEC = "/usr/bin/ccache";
     };
