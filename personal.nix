@@ -11,10 +11,10 @@
       fd
       eza
       delta
-      # bat
-      # fzf
-      # zoxide
-      # ripgrep
+      bat
+      fzf
+      zoxide
+      ripgrep
       # just
       # xclip
       # will be changed to this in the feature
