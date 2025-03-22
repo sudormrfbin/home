@@ -112,38 +112,16 @@
           src = pkgs.fishPlugins."${name}".src;
         };
       in
-      with pkgs.fishPlugins;
       [
         # doesn't work on wayland properly (does work with kitty)
         # https://github.com/franciscolourenco/done/issues/134
-        {
-          name = "done";
-          src = done.src;
-        }
-        {
-          name = "pure";
-          src = pure.src;
-        }
-        {
-          name = "pisces";
-          src = pisces.src;
-        }
-        {
-          name = "puffer";
-          src = puffer.src;
-        }
-        {
-          name = "fzf-fish";
-          src = fzf-fish.src;
-        }
-        {
-          name = "fish-bd";
-          src = fish-bd.src;
-        }
-        {
-          name = "colored-man-pages";
-          src = colored-man-pages.src;
-        }
+        (plug "done")
+        (plug "pure")
+        (plug "pisces")
+        (plug "puffer")
+        (plug "fzf-fish")
+        (plug "fish-bd")
+        (plug "colored-man-pages")
       ];
   };
 }
