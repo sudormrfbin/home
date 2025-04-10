@@ -74,8 +74,8 @@
 
       c = "cargo";
 
-      h = "$EDITOR ~/.config/home-manager";
-      hs = "home-manager switch --flake ~/.config/home-manager";
+      h = "$EDITOR ~/.config/home";
+      hs = "home-manager switch --flake ~/.config/home";
     };
 
     functions = {
