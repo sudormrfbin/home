@@ -15,7 +15,7 @@
       fzf
       zoxide
       ripgrep
-      uv
+      # uv
       # just
       # xclip
       # will be changed to this in the feature

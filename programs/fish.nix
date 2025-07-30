@@ -30,7 +30,7 @@
       # derivation build step somehow. Put it here for now.
       set -x FZF_DEFAULT_OPTS '--bind "ctrl-x:execute-silent(printf \'%s \' {+} | xclip -selection clipboard)+abort" --height=20% --cycle'
 
-      fish_add_path "$HOME/.moon/bin" "$HOME/Flutter/flutter/bin" "$HOME/.cargo/bin" "$HOME/.pub-cache/bin"
+      fish_add_path "$HOME/.local/bin" "$HOME/.moon/bin" "$HOME/Flutter/flutter/bin" "$HOME/.cargo/bin" "$HOME/.pub-cache/bin"
     '';
     shellAbbrs = {
       rl = "exec fish";
